@@ -16,7 +16,7 @@ jobs:
       - name: Build JAR with Maven
         run: mvn clean package
       - name: Test JAR execution
-        run: java -jar target/PopulationReport-1.0-SNAPSHOT-jar-with-dependencies.jar
+        run: java -jar target/PopulationReport-0.1-jar-with-dependencies.jar
       - name: Build Docker Image
         run: docker build -t populationreport .
       - name: Run image
