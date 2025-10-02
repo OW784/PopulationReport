@@ -16,8 +16,8 @@ jobs:
       - name: Compile with Maven
         run: mvn compile
       - name: Build Docker Image
-        run: docker build -t devopsimage .
+        run: docker build -t populationreport .
       - name: Run image
-        run: docker run --name devopscontainer -d devopsimage
+        run: docker run --name populationreport-container -d populationreport
       - name: view logs
-        run: docker logs devopscontainer
+        run: docker logs populationreport-container
