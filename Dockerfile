@@ -1,4 +1,4 @@
-FROM openjdk:latest
-COPY ./target/classes/com /tmp/com
-WORKDIR /tmp
-ENTRYPOINT ["java", "com.napier.pr.Main"]
+FROM openjdk:17-jdk-slim
+COPY ./target/classes /app/classes
+WORKDIR /app
+ENTRYPOINT ["java", "-cp", "classes", "com.napier.pr.Main"]
