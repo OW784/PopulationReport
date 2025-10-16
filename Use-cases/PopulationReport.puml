@@ -1,0 +1,33 @@
+@startuml
+left to right direction
+actor "End User" as User
+
+rectangle "Population Report System" {
+    usecase "Sort places by population" as UC1
+    usecase "Find top countries by population" as UC2
+    usecase "Sort cities by population" as UC3
+    usecase "Find top cities by population" as UC4
+    usecase "Find top capital cities by population" as UC5
+    usecase "Show population breakdown" as UC6
+    usecase "View population for a region" as UC7
+    usecase "View population by language" as UC8
+    usecase "Generate country report" as UC9
+    usecase "Generate city report" as UC10
+    usecase "Generate capital city report" as UC11
+    usecase "Generate detailed population report" as UC12
+}
+
+User --> UC1
+User --> UC2
+User --> UC3
+User --> UC4
+User --> UC5
+User --> UC6
+User --> UC7
+User --> UC8
+User --> UC9
+User --> UC10
+User --> UC11
+User --> UC12
+
+@enduml
