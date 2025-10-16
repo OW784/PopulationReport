@@ -4,9 +4,7 @@ import java.sql.*;
 
 public class Main
 {
-    public class App
-    {
-        public static void main(String[] args)
+    public static void main(String[] args)
         {
             try
             {
@@ -30,7 +28,7 @@ public class Main
                     // Waiting for db to start
                     Thread.sleep(30000);
                     // Connect to database
-                    con = DriverManager.getConnection("jdbc:mysql://db:3306/employees?allowPublicKeyRetrieval=true&useSSL=false", "root", "example");
+                    con = DriverManager.getConnection("jdbc:mysql://db:3306/world?allowPublicKeyRetrieval=true&useSSL=false", "root", "password");
                     System.out.println("Successfully connected");
                     // Wait a bit
                     Thread.sleep(10000);
@@ -61,8 +59,6 @@ public class Main
                 }
             }
         }
-    }
-
 }
 
 
