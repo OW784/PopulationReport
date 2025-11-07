@@ -18,16 +18,20 @@ public class Main {
         List<Country> countries = app.getCountriesByPopulationLtS();
         app.displayCountriesByPopulationLtS(countries);
 
-        System.out.println("====================================================");
+        System.out.println("===========================<Population of specified areas>=========================");
 
-        List<Country> continentCountries = app.getCountriesByContinentAndPopulation("Europe");
+        System.out.println("===========================<Population of specified continent>=========================");
+        List<Country> continentCountries = app.getCountriesByContinentAndPopulation("Asia");
         app.displayContinentCountries(continentCountries);
+
+        System.out.println("===========================<Population of specified Regions>=========================");
+        List<Country> RegionsCountries = app.getCountriesByRegionsAndPopulation("South America");
+        app.displayRegionsCountries(RegionsCountries);
+
 
 
         // Disconnect from database
         app.disconnect();
-
-
     }
 
     /**
@@ -131,10 +135,12 @@ public class Main {
             }
     }
 
+    //usecase #15
+    // continent by population [90% COMPLEATED | currently can't figure out a way to display witch continient in final diplay method as no string can be used? - finn]
     public List<Country> getCountriesByContinentAndPopulation(String continent) {
         try {
             Statement stmt = con.createStatement();
-            String strSelect = "SELECT code, Name, Continent, Region, Population FROM country WHERE Continent = 'EUROPE' ORDER BY Population DESC";
+            String strSelect = "SELECT code, Name, Continent, Region, Population FROM country WHERE Continent = '" + continent + "' ORDER BY Population DESC";
             ResultSet rs = stmt.executeQuery(strSelect);
 
             List<Country> continentCountries = new ArrayList<>();
@@ -151,7 +157,7 @@ public class Main {
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            System.out.println("Failed to get employee details");
+            System.out.println("Failed to get details");
             return null;
 
         }
@@ -159,13 +165,61 @@ public class Main {
 
     public void displayContinentCountries(List<Country> continentCountries) {
         //for every country in the countries list, print the details
+        int total_pop = 0;
         if (continentCountries != null)
             for (Country country : continentCountries) {
                 System.out.println("Name: " + country.name + ", " + "Continent: " + country.continent + ", " + "Population: " + country.population);
+                total_pop += country.population;
             }
+        // Issue is here in final message
+        System.out.println("===========================<Population of specified continent>=========================");
+        System.out.println("The total population is: " + total_pop * -1);
+    }
+
+    // regions by population
+    public List<Country> getCountriesByRegionsAndPopulation(String region) {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT code, Name, Continent, Region, Population FROM country WHERE Region = '" + region + "' ORDER BY Population DESC";
+            ResultSet rs = stmt.executeQuery(strSelect);
+
+            List<Country> RegionsCountries = new ArrayList<>();
+            while (rs.next()) {
+                Country country = new Country();
+                country.code = rs.getString("Code");
+                country.name = rs.getString("Name");
+                country.continent = rs.getString("Continent");
+                country.region = rs.getString("Region");
+                country.population = rs.getInt("Population");
+                RegionsCountries.add(country);
+            }
+            return RegionsCountries;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get details");
+            return null;
+
+        }
+    }
+
+    public void displayRegionsCountries(List<Country> RegionsCountries) {
+        //for every country in the countries list, print the details
+        int total_pop = 0;
+        if (RegionsCountries != null)
+            for (Country country : RegionsCountries) {
+                System.out.println("Name: " + country.name + ", " + "Region: " + country.region + ", " + "Population: " + country.population);
+                total_pop += country.population;
+            }
+        // Issue is here in final message
+        System.out.println("===========================<Population of specified region>=========================");
+        System.out.println("The total population is: " + total_pop);
     }
 
 }
+
+
+
 
 
 
