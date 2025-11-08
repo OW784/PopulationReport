@@ -11,17 +11,24 @@ public class Main {
     public static void main(String[] args) {
         // Create new Application
         Main app = new Main();
+        Display display = new Display();  // Create Display object
 
         // Connect to database
         app.connect();
 
         List<Country> countries = app.getCountriesByPopulationLtS();
-        app.displayCountriesByPopulationLtS(countries);
+        display.displayCountries(countries);
 
         System.out.println("====================================================");
 
         List<Country> continentCountries = app.getCountriesByContinentAndPopulation("Europe");
-        app.displayContinentCountries(continentCountries);
+        display.displayCountries(continentCountries);
+
+        System.out.println("====================================================");
+
+        // Get top 10 countries (can be changed to read from user input if needed)
+        List<Country> userCountries = app.getCountriesByUserInput(10);
+        display.displayCountries(userCountries);
 
 
         // Disconnect from database
@@ -112,26 +119,15 @@ public class Main {
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            System.out.println("Failed to get employee details");
+            System.out.println("Failed to get country details");
             return null;
 
         }
     }
 
 
-    /**
-     * Shows the countries list when you run the program
-     *
-     */
-    public void displayCountriesByPopulationLtS(List<Country> countries) {
-        //for every country in the countries list, print the details
-        if (countries != null)
-            for (Country country : countries) {
-                System.out.println("Name: " + country.name + ", " + "Population: " + country.population);
-            }
-    }
-
-    public List<Country> getCountriesByContinentAndPopulation(String continent) {
+    public List<Country> getCountriesByContinentAndPopulation(String continent)
+    {
         try {
             Statement stmt = con.createStatement();
             String strSelect = "SELECT code, Name, Continent, Region, Population FROM country WHERE Continent = 'EUROPE' ORDER BY Population DESC";
@@ -151,19 +147,45 @@ public class Main {
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            System.out.println("Failed to get employee details");
+            System.out.println("Failed to get country details");
             return null;
 
         }
     }
 
-    public void displayContinentCountries(List<Country> continentCountries) {
-        //for every country in the countries list, print the details
-        if (continentCountries != null)
-            for (Country country : continentCountries) {
-                System.out.println("Name: " + country.name + ", " + "Continent: " + country.continent + ", " + "Population: " + country.population);
+
+
+    public List<Country> getCountriesByUserInput(int n)
+    {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT Code, Name, Continent, Region, Population FROM country ORDER BY Population DESC LIMIT " + n;
+            ResultSet rs = stmt.executeQuery(strSelect);
+
+            List<Country> continentCountries = new ArrayList<>();
+            while (rs.next()) {
+                Country country = new Country();
+                country.code = rs.getString("Code");
+                country.name = rs.getString("Name");
+                country.continent = rs.getString("Continent");
+                country.region = rs.getString("Region");
+                country.population = rs.getInt("Population");
+                continentCountries.add(country);
             }
+            return continentCountries;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get country details");
+            return null;
+
+        }
+
+
+
     }
+
+
 
 }
 

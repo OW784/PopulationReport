@@ -1,10 +1,11 @@
 
 services:
-  # Application Dockerfile is in same folder which is .
+
   app:
     build: .
+    restart: "no"
 
-  # db is in database folder
+
   db:
     build: ./database
     restart: always
