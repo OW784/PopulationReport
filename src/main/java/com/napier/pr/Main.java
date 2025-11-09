@@ -19,16 +19,21 @@ public class Main {
         List<Country> countries = app.getCountriesByPopulationLtS();
         display.displayCountries(countries);
 
-        System.out.println("====================================================");
+        System.out.println("\n==================================================================================================================\n");
 
         List<Country> continentCountries = app.getCountriesByContinentAndPopulation("Europe");
         display.displayCountries(continentCountries);
 
-        System.out.println("====================================================");
+        System.out.println("\n==================================================================================================================\n");
 
         // Get top 10 countries (can be changed to read from user input if needed)
         List<Country> userCountries = app.getCountriesByUserInput(10);
         display.displayCountries(userCountries);
+
+        System.out.println("\n==================================================================================================================\n");
+
+        List<Country> userContinentCountries = app.getContinentCountriesByUserInput(10);
+        display.displayCountries(userContinentCountries);
 
 
         // Disconnect from database
@@ -36,7 +41,6 @@ public class Main {
 
 
     }
-
     /**
      * Method to connect to the database
      *
@@ -87,7 +91,6 @@ public class Main {
             }
         }
     }
-
 
     /**
      *
@@ -180,20 +183,34 @@ public class Main {
             return null;
 
         }
-
-
-
     }
 
+    public List<Country> getContinentCountriesByUserInput(int n)
+    {
+        try
+        {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT Code, Name, Continent, Region, Population FROM country WHERE continent = 'ASIA' ORDER BY Population DESC LIMIT " + n;
+            ResultSet rs = stmt.executeQuery(strSelect);
 
+            List<Country> continentCountries = new ArrayList<>();
+            while (rs.next())
+            {
+                Country country = new Country();
+                country.code = rs.getString("Code");
+                country.name = rs.getString("Name");
+                country.continent = rs.getString("Continent");
+                country.region = rs.getString("Region");
+                country.population = rs.getInt("Population");
+                continentCountries.add(country);
+            }
+            return continentCountries;
 
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get country details");
+            return null;
+
+        }
+    }
 }
-
-
-
-
-
-
-
-
-
