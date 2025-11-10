@@ -226,7 +226,7 @@ public class Main {
     public List<City> getCitysByDistricAndpopulation(String distric) {
         try {
             Statement stmt = con.createStatement();
-            String strSelect = "SELECT ID, Name, CountryCode, District, Population FROM City WHERE District = '" + distric + "' ORDER BY Population DESC";
+            String strSelect = "SELECT ID, Name, CountryCode, District, Population FROM city WHERE District = '" + distric + "' ORDER BY Population DESC";
             ResultSet rs = stmt.executeQuery(strSelect);
 
             List<City> DistricsCity = new ArrayList<>();
