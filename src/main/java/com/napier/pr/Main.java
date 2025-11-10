@@ -29,6 +29,10 @@ public class Main {
         app.displayRegionsCountries(RegionsCountries);
 
 
+        //New list for city data type (Finns attempt so it may be borked)
+        List<City> DistricsCity = app.getCitysByDistricAndpopulation("Buenos Aires");
+        app.displayDistricsCity(DistricsCity);
+
 
         // Disconnect from database
         app.disconnect();
@@ -216,8 +220,50 @@ public class Main {
         System.out.println("The total population is: " + total_pop);
     }
 
-}
 
+
+    // distric population | curretly can't figure out what missing for getting the List<city> to work, this is total rejigging of the getCountiesby method but im not sure what im missing
+    public List<City> getCitysByDistricAndpopulation(String distric) {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT ID, Name, CountryCode, District, Population FROM City WHERE District = '" + distric + "' ORDER BY Population DESC";
+            ResultSet rs = stmt.executeQuery(strSelect);
+
+            List<City> DistricsCity = new ArrayList<>();
+
+            while (rs.next()) {
+                City city = new City();
+                city.id = rs.getString("id");
+                city.name = rs.getString("Name");
+                city.countryCode = rs.getString("CountryCode");
+                city.district = rs.getString("District");
+                city.population = rs.getInt("Population");
+                DistricsCity.add(city);
+            }
+            return DistricsCity;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get details");
+            return null;
+
+        }
+    }
+
+
+    public void displayDistricsCity(List<City> DistricsCity) {
+        //for every country in the countries list, print the details
+        int total_pop = 0;
+        if (DistricsCity != null)
+            for (City city : DistricsCity) {
+                System.out.println("Name: " + city.name + ", " + "Region: " + city.district + ", " + "Population: " + city.population);
+                total_pop += city.population;
+            }
+        // Issue is here in final message
+        System.out.println("===========================<Population of specified region>=========================");
+        System.out.println("The total population is: " + total_pop);
+    }
+}
 
 
 
