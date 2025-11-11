@@ -28,10 +28,15 @@ public class Main {
         List<Country> RegionsCountries = app.getCountriesByRegionsAndPopulation("South America");
         app.displayRegionsCountries(RegionsCountries);
 
-
+        System.out.println("===========================<Population of specified Districkt>=========================");
         //New list for city data type (Finns attempt so it may be borked)
-        List<City> DistricsCity = app.getCitysByDistricAndpopulation("Buenos Aires");
+        List<City> DistricsCity = app.getCitysByDistricAndpopulation("Scotland");
         app.displayDistricsCity(DistricsCity);
+
+        System.out.println("===========================<Population of specified City>=========================");
+        //New list for city data type (Finns attempt so it heckin works!)
+        List<City> cityCity = app.getCitysByCityAndpopulation("Edinburgh");
+        app.displayCityCity(cityCity);
 
 
         // Disconnect from database
@@ -222,7 +227,7 @@ public class Main {
 
 
 
-    // distric population | curretly can't figure out what missing for getting the List<city> to work, this is total rejigging of the getCountiesby method but im not sure what im missing
+    // distric population
     public List<City> getCitysByDistricAndpopulation(String distric) {
         try {
             Statement stmt = con.createStatement();
@@ -252,17 +257,66 @@ public class Main {
 
 
     public void displayDistricsCity(List<City> DistricsCity) {
-        //for every country in the countries list, print the details
+        //for every city in the citys list, print the details
         int total_pop = 0;
         if (DistricsCity != null)
             for (City city : DistricsCity) {
-                System.out.println("Name: " + city.name + ", " + "Region: " + city.district + ", " + "Population: " + city.population);
+                System.out.println("Name: " + city.name + ", " + "District: " + city.district + ", " + "Population: " + city.population);
                 total_pop += city.population;
             }
         // Issue is here in final message
-        System.out.println("===========================<Population of specified region>=========================");
+        System.out.println("===========================<Population of specified distric>=========================");
         System.out.println("The total population is: " + total_pop);
     }
+
+    // city population
+    public List<City> getCitysByCityAndpopulation(String UserCity) {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT ID, Name, CountryCode, District, Population FROM city WHERE Name = '" + UserCity + "' ORDER BY Population DESC";
+            ResultSet rs = stmt.executeQuery(strSelect);
+
+            List<City> cityCity = new ArrayList<>();
+
+            while (rs.next()) {
+                City city = new City();
+                city.id = rs.getString("id");
+                city.name = rs.getString("Name");
+                city.countryCode = rs.getString("CountryCode");
+                city.district = rs.getString("District");
+                city.population = rs.getInt("Population");
+                cityCity.add(city);
+            }
+            return cityCity;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get details");
+            return null;
+
+        }
+    }
+
+
+    public void displayCityCity(List<City> cityCity) {
+        //for every city in the citys list, print the details
+        int total_pop = 0;
+        if (cityCity != null)
+            for (City city : cityCity) {
+                System.out.println("Name: " + city.name + ", Population: " + city.population);
+                total_pop += city.population;
+            }
+        // Issue is here in final message
+        System.out.println("===========================<Population of specified City>=========================");
+        System.out.println("The total population is: " + total_pop);
+    }
+
+
+
+
+
+
+
 }
 
 
