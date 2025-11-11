@@ -21,6 +21,7 @@ public class Main {
 
         System.out.println("\n==================================================================================================================\n");
 
+        // Your continent query
         List<Country> continentCountries = app.getCountriesByContinentAndPopulation("Europe");
         display.displayCountries(continentCountries);
 
@@ -35,11 +36,30 @@ public class Main {
         List<Country> userContinentCountries = app.getContinentCountriesByUserInput(10);
         display.displayCountries(userContinentCountries);
 
+        // Teammate's functionality
+        System.out.println("===========================<Population of specified areas>=========================");
+
+        System.out.println("===========================<Population of specified continent>=========================");
+        List<Country> continentCountries2 = app.getCountriesByContinentAndPopulation("Asia");
+        app.displayContinentCountries(continentCountries2);
+
+        System.out.println("===========================<Population of specified Regions>=========================");
+        List<Country> RegionsCountries = app.getCountriesByRegionsAndPopulation("South America");
+        app.displayRegionsCountries(RegionsCountries);
+
+        System.out.println("===========================<Population of specified Districkt>=========================");
+        //New list for city data type (Finns attempt so it may be borked)
+        List<City> DistricsCity = app.getCitysByDistricAndpopulation("Scotland");
+        app.displayDistricsCity(DistricsCity);
+
+        System.out.println("===========================<Population of specified City>=========================");
+        //New list for city data type (Finns attempt so it heckin works!)
+        List<City> cityCity = app.getCitysByCityAndpopulation("Edinburgh");
+        app.displayCityCity(cityCity);
+
 
         // Disconnect from database
         app.disconnect();
-
-
     }
     /**
      * Method to connect to the database
@@ -128,12 +148,24 @@ public class Main {
         }
     }
 
+    /**
+     * Shows the countries list when you run the program
+     *
+     */
+    public void displayCountriesByPopulationLtS(List<Country> countries) {
+        //for every country in the countries list, print the details
+        if (countries != null)
+            for (Country country : countries) {
+                System.out.println("Name: " + country.name + ", " + "Population: " + country.population);
+            }
+    }
 
-    public List<Country> getCountriesByContinentAndPopulation(String continent)
-    {
+    //usecase #15
+    // continent by population [90% COMPLEATED | currently can't figure out a way to display witch continient in final diplay method as no string can be used? - finn]
+    public List<Country> getCountriesByContinentAndPopulation(String continent) {
         try {
             Statement stmt = con.createStatement();
-            String strSelect = "SELECT code, Name, Continent, Region, Population FROM country WHERE Continent = 'EUROPE' ORDER BY Population DESC";
+            String strSelect = "SELECT code, Name, Continent, Region, Population FROM country WHERE Continent = '" + continent + "' ORDER BY Population DESC";
             ResultSet rs = stmt.executeQuery(strSelect);
 
             List<Country> continentCountries = new ArrayList<>();
@@ -150,14 +182,26 @@ public class Main {
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            System.out.println("Failed to get country details");
+            System.out.println("Failed to get details");
             return null;
 
         }
     }
 
+    public void displayContinentCountries(List<Country> continentCountries) {
+        //for every country in the countries list, print the details
+        int total_pop = 0;
+        if (continentCountries != null)
+            for (Country country : continentCountries) {
+                System.out.println("Name: " + country.name + ", " + "Continent: " + country.continent + ", " + "Population: " + country.population);
+                total_pop += country.population;
+            }
+        // Issue is here in final message
+        System.out.println("===========================<Population of specified continent>=========================");
+        System.out.println("The total population is: " + total_pop * -1);
+    }
 
-
+    // Your methods
     public List<Country> getCountriesByUserInput(int n)
     {
         try {
@@ -213,4 +257,131 @@ public class Main {
 
         }
     }
+
+    // regions by population
+    public List<Country> getCountriesByRegionsAndPopulation(String region) {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT code, Name, Continent, Region, Population FROM country WHERE Region = '" + region + "' ORDER BY Population DESC";
+            ResultSet rs = stmt.executeQuery(strSelect);
+
+            List<Country> RegionsCountries = new ArrayList<>();
+            while (rs.next()) {
+                Country country = new Country();
+                country.code = rs.getString("Code");
+                country.name = rs.getString("Name");
+                country.continent = rs.getString("Continent");
+                country.region = rs.getString("Region");
+                country.population = rs.getInt("Population");
+                RegionsCountries.add(country);
+            }
+            return RegionsCountries;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get details");
+            return null;
+
+        }
+    }
+
+    public void displayRegionsCountries(List<Country> RegionsCountries) {
+        //for every country in the countries list, print the details
+        int total_pop = 0;
+        if (RegionsCountries != null)
+            for (Country country : RegionsCountries) {
+                System.out.println("Name: " + country.name + ", " + "Region: " + country.region + ", " + "Population: " + country.population);
+                total_pop += country.population;
+            }
+        // Issue is here in final message
+        System.out.println("===========================<Population of specified region>=========================");
+        System.out.println("The total population is: " + total_pop);
+    }
+
+
+
+    // distric population
+    public List<City> getCitysByDistricAndpopulation(String distric) {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT ID, Name, CountryCode, District, Population FROM city WHERE District = '" + distric + "' ORDER BY Population DESC";
+            ResultSet rs = stmt.executeQuery(strSelect);
+
+            List<City> DistricsCity = new ArrayList<>();
+
+            while (rs.next()) {
+                City city = new City();
+                city.id = rs.getString("id");
+                city.name = rs.getString("Name");
+                city.countryCode = rs.getString("CountryCode");
+                city.district = rs.getString("District");
+                city.population = rs.getInt("Population");
+                DistricsCity.add(city);
+            }
+            return DistricsCity;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get details");
+            return null;
+
+        }
+    }
+
+
+    public void displayDistricsCity(List<City> DistricsCity) {
+        //for every city in the citys list, print the details
+        int total_pop = 0;
+        if (DistricsCity != null)
+            for (City city : DistricsCity) {
+                System.out.println("Name: " + city.name + ", " + "District: " + city.district + ", " + "Population: " + city.population);
+                total_pop += city.population;
+            }
+        // Issue is here in final message
+        System.out.println("===========================<Population of specified distric>=========================");
+        System.out.println("The total population is: " + total_pop);
+    }
+
+    // city population
+    public List<City> getCitysByCityAndpopulation(String UserCity) {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT ID, Name, CountryCode, District, Population FROM city WHERE Name = '" + UserCity + "' ORDER BY Population DESC";
+            ResultSet rs = stmt.executeQuery(strSelect);
+
+            List<City> cityCity = new ArrayList<>();
+
+            while (rs.next()) {
+                City city = new City();
+                city.id = rs.getString("id");
+                city.name = rs.getString("Name");
+                city.countryCode = rs.getString("CountryCode");
+                city.district = rs.getString("District");
+                city.population = rs.getInt("Population");
+                cityCity.add(city);
+            }
+            return cityCity;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get details");
+            return null;
+
+        }
+    }
+
+
+    public void displayCityCity(List<City> cityCity) {
+        //for every city in the citys list, print the details
+        int total_pop = 0;
+        if (cityCity != null)
+            for (City city : cityCity) {
+                System.out.println("Name: " + city.name + ", Population: " + city.population);
+                total_pop += city.population;
+            }
+        // Issue is here in final message
+        System.out.println("===========================<Population of specified City>=========================");
+        System.out.println("The total population is: " + total_pop);
+    }
+
 }
