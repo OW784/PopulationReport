@@ -21,7 +21,7 @@ public class Main {
 
         System.out.println("\n==================================================================================================================\n");
 
-        // Your continent query
+
         List<Country> continentCountries = app.getCountriesByContinentAndPopulation("Europe");
         display.displayCountries(continentCountries);
 
@@ -36,7 +36,7 @@ public class Main {
         List<Country> userContinentCountries = app.getContinentCountriesByUserInput(10);
         display.displayCountries(userContinentCountries);
 
-        // Teammate's functionality
+
         System.out.println("===========================<Population of specified areas>=========================");
 
         System.out.println("===========================<Population of specified continent>=========================");
@@ -48,12 +48,12 @@ public class Main {
         app.displayRegionsCountries(RegionsCountries);
 
         System.out.println("===========================<Population of specified Districkt>=========================");
-        //New list for city data type (Finns attempt so it may be borked)
+
         List<City> DistricsCity = app.getCitysByDistricAndpopulation("Scotland");
         app.displayDistricsCity(DistricsCity);
 
         System.out.println("===========================<Population of specified City>=========================");
-        //New list for city data type (Finns attempt so it heckin works!)
+
         List<City> cityCity = app.getCitysByCityAndpopulation("Edinburgh");
         app.displayCityCity(cityCity);
 
@@ -196,12 +196,12 @@ public class Main {
                 System.out.println("Name: " + country.name + ", " + "Continent: " + country.continent + ", " + "Population: " + country.population);
                 total_pop += country.population;
             }
-        // Issue is here in final message
+
         System.out.println("===========================<Population of specified continent>=========================");
         System.out.println("The total population is: " + total_pop * -1);
     }
 
-    // Your methods
+
     public List<Country> getCountriesByUserInput(int n)
     {
         try {
@@ -293,7 +293,7 @@ public class Main {
                 System.out.println("Name: " + country.name + ", " + "Region: " + country.region + ", " + "Population: " + country.population);
                 total_pop += country.population;
             }
-        // Issue is here in final message
+
         System.out.println("===========================<Population of specified region>=========================");
         System.out.println("The total population is: " + total_pop);
     }
@@ -337,7 +337,7 @@ public class Main {
                 System.out.println("Name: " + city.name + ", " + "District: " + city.district + ", " + "Population: " + city.population);
                 total_pop += city.population;
             }
-        // Issue is here in final message
+
         System.out.println("===========================<Population of specified distric>=========================");
         System.out.println("The total population is: " + total_pop);
     }
@@ -379,7 +379,7 @@ public class Main {
                 System.out.println("Name: " + city.name + ", Population: " + city.population);
                 total_pop += city.population;
             }
-        // Issue is here in final message
+
         System.out.println("===========================<Population of specified City>=========================");
         System.out.println("The total population is: " + total_pop);
     }
