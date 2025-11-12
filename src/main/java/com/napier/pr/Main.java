@@ -15,8 +15,13 @@ public class Main {
         // Connect to database
         app.connect();
 
+        System.out.println("===========================<Population of all countries>=========================");
         List<Country> countries = app.getCountriesByPopulationLtS();
         app.displayCountriesByPopulationLtS(countries);
+
+        System.out.println("===========================<Population of all cities>=========================");
+        List<City> cities = app.getCitiesByPopulationLtS();
+        app.displayCitiesByPopulationLtS(cities);
 
         System.out.println("===========================<Population of specified areas>=========================");
 
@@ -37,6 +42,9 @@ public class Main {
         //New list for city data type (Finns attempt so it heckin works!)
         List<City> cityCity = app.getCitysByCityAndpopulation("Edinburgh");
         app.displayCityCity(cityCity);
+
+        List<City> cityReport = app.cityReport("Edinburgh");
+        app.displayCityReport(cityReport);
 
 
         // Disconnect from database
@@ -141,6 +149,56 @@ public class Main {
         if (countries != null)
             for (Country country : countries) {
                 System.out.println("Name: " + country.name + ", " + "Population: " + country.population);
+            }
+    }
+
+    /**
+     *
+     * Use case #12
+     * Get all cities from the world database in descending order by population
+     *
+     * @return the list of cities sorted by population in descending order
+     */
+
+    public List<City> getCitiesByPopulationLtS() {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT ID, Name, CountryCode, District, Population FROM city ORDER BY Population DESC";
+            ResultSet rs = stmt.executeQuery(strSelect);
+
+            List<City> cities = new ArrayList<>();
+            //while there is new lines in the database
+            // create a city object and add the details
+            //add to the array list
+            while (rs.next()) {
+                City city = new City();
+                city.id = rs.getString("id");
+                city.name = rs.getString("Name");
+                city.countryCode = rs.getString("CountryCode");
+                city.district = rs.getString("District");
+                city.population = rs.getInt("Population");
+                cities.add(city);
+            }
+            return cities;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get employee details");
+            return null;
+
+        }
+    }
+
+
+    /**
+     * Shows the cities list when you run the program
+     *
+     */
+    public void displayCitiesByPopulationLtS(List<City> cities) {
+        //for every country in the countries list, print the details
+        if (cities != null)
+            for (City city : cities) {
+                System.out.println("Name: " + city.name + ", " + "Population: " + city.population);
             }
     }
 
@@ -309,6 +367,45 @@ public class Main {
         // Issue is here in final message
         System.out.println("===========================<Population of specified City>=========================");
         System.out.println("The total population is: " + total_pop);
+    }
+
+
+    // city report | use case #18 and #15 on gtt? appretnly they have 2 numbers lmao
+    public List<City> cityReport(String UserCity) {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT ID, Name, CountryCode, District, Population FROM city WHERE Name = '" + UserCity + "' ORDER BY Population DESC";
+            ResultSet rs = stmt.executeQuery(strSelect);
+
+            List<City> cityReport = new ArrayList<>();
+
+            while (rs.next()) {
+                City city = new City();
+                city.id = rs.getString("id");
+                city.name = rs.getString("Name");
+                city.countryCode = rs.getString("CountryCode");
+                city.district = rs.getString("District");
+                city.population = rs.getInt("Population");
+                cityReport.add(city);
+            }
+            return cityReport;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get details");
+            return null;
+
+        }
+    }
+
+
+    public void displayCityReport(List<City> cityReport) {
+        if (cityReport != null)
+            for (City city : cityReport) {
+                System.out.println("Name: " + city.name + ", Districkt: " + city.district + ", Population: " + city.population);
+
+            }
+
     }
 
 
