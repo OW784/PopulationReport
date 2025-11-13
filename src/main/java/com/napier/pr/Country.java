@@ -1,4 +1,6 @@
 package com.napier.pr;
+
+
 /**
  * Country class with basic information of a country
  *
@@ -31,5 +33,10 @@ public class Country
      *
      */
     public int population;
+    /**
+     * Capital City
+     */
+    public String capital;
+
 
 }

@@ -9,7 +9,7 @@ public class City
      * Countries 3 letter code for example 'ABC'
      *
      */
-    public String id;
+    public int id;
 
     /**
      * City ID
@@ -20,7 +20,7 @@ public class City
      *City name
      *
      */
-    public String countryCode;
+    public int countryCode;
     /**
      *  country code
      *
