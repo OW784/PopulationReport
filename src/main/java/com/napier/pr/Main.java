@@ -1,38 +1,26 @@
 package com.napier.pr;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
+import java.sql.*;
+import java.util.*;
 
 public class Main {
+
     private Connection con = null;
 
-
     public static void main(String[] args) {
-        // Create new Application
         Main app = new Main();
-
-        // Connect to database
         app.connect();
 
-        List<Country> countries = app.getCountriesByPopulationLtS();
-        app.displayCountriesByPopulationLtS(countries);
+        // Uncomment any of these to test your reports:
+        // app.capitalCityReport();
+        // app.topNCapitalCities(5, "world", "");
+        // app.populationReport("continent", "Europe");
 
-        System.out.println("====================================================");
-
-        List<Country> continentCountries = app.getCountriesByContinentAndPopulation("Europe");
-        app.displayContinentCountries(continentCountries);
-
-
-        // Disconnect from database
         app.disconnect();
-
-
     }
 
     /**
      * Method to connect to the database
-     *
      */
     public void connect() {
         try {
@@ -43,22 +31,21 @@ public class Main {
             System.exit(-1);
         }
 
-        // Connection to the database
         int retries = 100;
         for (int i = 0; i < retries; ++i) {
             System.out.println("Connecting to database...");
             try {
-                // Waiting for db to start
                 Thread.sleep(30000);
-                // Connect to database
-                con = DriverManager.getConnection("jdbc:mysql://db:3306/world?allowPublicKeyRetrieval=true&useSSL=false", "root", "password");
+                con = DriverManager.getConnection(
+                        "jdbc:mysql://db:3306/world?allowPublicKeyRetrieval=true&useSSL=false",
+                        "root",
+                        "password"
+                );
                 System.out.println("Successfully connected");
-                // Wait a bit
                 Thread.sleep(10000);
-                // Exit for loop
                 break;
             } catch (SQLException sqle) {
-                System.out.println("Failed to connect to database attempt " + Integer.toString(i));
+                System.out.println("Failed to connect to database attempt " + i);
                 System.out.println(sqle.getMessage());
             } catch (InterruptedException ie) {
                 System.out.println("Thread interrupted? Should not happen.");
@@ -67,13 +54,11 @@ public class Main {
     }
 
     /**
-     * Method to disconnect to the database
-     *
+     * Method to disconnect from the database
      */
     public void disconnect() {
         if (con != null) {
             try {
-                // Close connection
                 con.close();
             } catch (Exception e) {
                 System.out.println("Error closing connection to database");
@@ -81,92 +66,130 @@ public class Main {
         }
     }
 
-
     /**
-     *
-     * Get all countries from the world database in descending order by population
-     *
-     * @return the list of countries sorted by population in descending order
+     * Produces a report of all capital cities ordered by population (largest to smallest).
      */
-
-    public List<Country> getCountriesByPopulationLtS() {
+    public void capitalCityReport() {
         try {
             Statement stmt = con.createStatement();
-            String strSelect = "SELECT Code, Name, Continent, Region, Population FROM country ORDER BY Population DESC";
+            String strSelect =
+                    "SELECT city.Name AS CapitalName, country.Name AS CountryName, city.Population AS Population " +
+                    "FROM city JOIN country ON country.Capital = city.ID " +
+                    "ORDER BY city.Population DESC";
+
             ResultSet rs = stmt.executeQuery(strSelect);
 
-            List<Country> countries = new ArrayList<>();
-            //while there is new lines in the database
-            // create a country object and add the details
-            //add to the array list
             while (rs.next()) {
-                Country country = new Country();
-                country.code = rs.getString("Code");
-                country.name = rs.getString("Name");
-                country.continent = rs.getString("Continent");
-                country.region = rs.getString("Region");
-                country.population = rs.getInt("Population");
-                countries.add(country);
-            }
-            return countries;
+                String name = rs.getString("CapitalName");
+                String country = rs.getString("CountryName");
+                int population = rs.getInt("Population");
 
+                System.out.println("Capital: " + name + ", Country: " + country + ", Population: " + population);
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            System.out.println("Failed to get employee details");
-            return null;
-
+            System.out.println("Failed to produce capital city report");
         }
     }
 
-
     /**
-     * Shows the countries list when you run the program
-     *
+     * Shows the top N highest population capital cities in the world, a continent or a region.
      */
-    public void displayCountriesByPopulationLtS(List<Country> countries) {
-        //for every country in the countries list, print the details
-        if (countries != null)
-            for (Country country : countries) {
-                System.out.println("Name: " + country.name + ", " + "Population: " + country.population);
-            }
-    }
-
-    public List<Country> getCountriesByContinentAndPopulation(String continent) {
+    public void topNCapitalCities(int limit, String areaType, String areaName) {
         try {
             Statement stmt = con.createStatement();
-            String strSelect = "SELECT code, Name, Continent, Region, Population FROM country WHERE Continent = 'EUROPE' ORDER BY Population DESC";
+
+            String strSelect =
+                    "SELECT city.Name AS CapitalName, country.Name AS CountryName, city.Population AS Population " +
+                    "FROM city JOIN country ON country.Capital = city.ID ";
+
+            if (areaType.equalsIgnoreCase("continent")) {
+                strSelect += "WHERE country.Continent = '" + areaName + "' ";
+            } else if (areaType.equalsIgnoreCase("region")) {
+                strSelect += "WHERE country.Region = '" + areaName + "' ";
+            }
+
+            strSelect += "ORDER BY city.Population DESC LIMIT " + limit;
+
             ResultSet rs = stmt.executeQuery(strSelect);
 
-            List<Country> continentCountries = new ArrayList<>();
             while (rs.next()) {
-                Country country = new Country();
-                country.code = rs.getString("Code");
-                country.name = rs.getString("Name");
-                country.continent = rs.getString("Continent");
-                country.region = rs.getString("Region");
-                country.population = rs.getInt("Population");
-                continentCountries.add(country);
-            }
-            return continentCountries;
+                String capital = rs.getString("CapitalName");
+                String country = rs.getString("CountryName");
+                int population = rs.getInt("Population");
 
+                System.out.println("Capital: " + capital + ", Country: " + country + ", Population: " + population);
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            System.out.println("Failed to get employee details");
-            return null;
-
+            System.out.println("Failed to get top N capital cities");
         }
     }
 
-    public void displayContinentCountries(List<Country> continentCountries) {
-        //for every country in the countries list, print the details
-        if (continentCountries != null)
-            for (Country country : continentCountries) {
-                System.out.println("Name: " + country.name + ", " + "Continent: " + country.continent + ", " + "Population: " + country.population);
-            }
-    }
+    /**
+     * Shows the total, urban and rural population of a continent, region or country.
+     */
+    public void populationReport(String areaType, String areaName) {
+        try {
+            Statement stmt = con.createStatement();
 
+            String totalPopQuery = "";
+            String urbanPopQuery = "";
+
+            if (areaType.equalsIgnoreCase("continent")) {
+                totalPopQuery =
+                        "SELECT SUM(Population) AS TotalPop FROM country WHERE Continent = '" + areaName + "'";
+
+                urbanPopQuery =
+                        "SELECT SUM(city.Population) AS UrbanPop FROM city " +
+                        "JOIN country ON city.CountryCode = country.Code " +
+                        "WHERE country.Continent = '" + areaName + "'";
+
+            } else if (areaType.equalsIgnoreCase("region")) {
+                totalPopQuery =
+                        "SELECT SUM(Population) AS TotalPop FROM country WHERE Region = '" + areaName + "'";
+
+                urbanPopQuery =
+                        "SELECT SUM(city.Population) AS UrbanPop FROM city " +
+                        "JOIN country ON city.CountryCode = country.Code " +
+                        "WHERE country.Region = '" + areaName + "'";
+
+            } else if (areaType.equalsIgnoreCase("country")) {
+                totalPopQuery =
+                        "SELECT Population AS TotalPop FROM country WHERE Name = '" + areaName + "'";
+
+                urbanPopQuery =
+                        "SELECT SUM(city.Population) AS UrbanPop FROM city " +
+                        "JOIN country ON city.CountryCode = country.Code " +
+                        "WHERE country.Name = '" + areaName + "'";
+            }
+
+            ResultSet rsTotal = stmt.executeQuery(totalPopQuery);
+            int totalPop = 0;
+            if (rsTotal.next()) {
+                totalPop = rsTotal.getInt("TotalPop");
+            }
+
+            ResultSet rsUrban = stmt.executeQuery(urbanPopQuery);
+            int urbanPop = 0;
+            if (rsUrban.next()) {
+                urbanPop = rsUrban.getInt("UrbanPop");
+            }
+
+            int ruralPop = totalPop - urbanPop;
+
+            System.out.println("Area Type: " + areaType);
+            System.out.println("Area Name: " + areaName);
+            System.out.println("Total Population: " + totalPop);
+            System.out.println("Urban Population: " + urbanPop);
+            System.out.println("Rural Population: " + ruralPop);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to produce population report");
+        }
+    }
 }
-
 
 
 
