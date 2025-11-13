@@ -11,11 +11,7 @@ public class Main {
         Main app = new Main();
         app.connect();
 
-        // Uncomment any of these to test your reports:
-        // app.capitalCityReport();
-        // app.topNCapitalCities(5, "world", "");
-        // app.populationReport("continent", "Europe");
-
+      
         app.disconnect();
     }
 
