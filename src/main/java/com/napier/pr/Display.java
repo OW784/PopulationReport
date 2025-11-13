@@ -4,6 +4,12 @@ import java.util.List;
 
 public class Display
 {
+    /**
+     * Takes a list of countries and displays it with the string
+     *
+     *
+     * @param Countries
+     */
     public void displayCountries(List<Country> Countries)
     {
         if (Countries == null)
@@ -21,6 +27,12 @@ public class Display
 
     }
 
+    /**
+     * Take a list of countries and display the string plus total population
+     *
+     *
+     * @param continentCountries
+     */
     public void displayContinentCountries(List<Country> continentCountries) {
         //for every country in the countries list, print the details
         int total_pop = 0;
@@ -33,6 +45,12 @@ public class Display
         System.out.println("===========================<Population of specified continent>=========================");
         System.out.println("The total population is: " + total_pop * -1);
     }
+    /**
+     * Take a list of countries and display the string plus total population
+     *
+     *
+     * @param RegionsCountries
+     */
 
     public void displayRegionsCountries(List<Country> RegionsCountries) {
         //for every country in the countries list, print the details
@@ -48,6 +66,13 @@ public class Display
         System.out.println("===========================<Population of specified region>=========================");
         System.out.println("The total population is: " + total_pop);
     }
+
+    /**
+     * Take a list of cities and display the string plus total population
+     *
+     *
+     * @param DistricsCity
+     */
 
     public void displayDistricsCity(List<City> DistricsCity) {
         //for every city in the citys list, print the details
@@ -68,6 +93,13 @@ public class Display
         System.out.println("===========================<Population of specified distric>=========================");
         System.out.println("The total population is: " + total_pop);
     }
+    /**
+     * Take a list of cities and display the string plus total population
+     *
+     *
+     * @param cityCity
+     */
+
 
     public void displayCityCity(List<City> cityCity) {
         //for every city in the citys list, print the details

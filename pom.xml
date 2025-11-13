@@ -38,7 +38,7 @@
                     <finalName>pr</finalName>
                     <archive>
                         <manifest>
-                            <mainClass>com.napier.pr.App</mainClass>
+                            <mainClass>com.napier.pr.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

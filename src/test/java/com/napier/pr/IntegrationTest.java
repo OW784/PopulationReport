@@ -37,19 +37,13 @@ public class IntegrationTest
     }
 
     @Test
-    void testGetCountriesByUserInput()
+    void testgetCountriesByPopulationLtS()
     {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter number:");
-        int n = scanner.nextInt();
-
-
-        List<Country> countries = app.getCountriesByUserInput();
+        List<Country> countries = app.getCountriesByPopulationLtS();
         assertNotNull(countries);
         assertFalse(countries.isEmpty());
 
-        assertEquals(10, countries.size());
-        assertEquals(5, countries.size());
+        Assertions.assertEquals("China", countries.get(0).name);
 
     }
 
