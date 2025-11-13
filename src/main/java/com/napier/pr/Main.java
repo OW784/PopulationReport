@@ -32,13 +32,13 @@ public class Main {
         System.out.println("\n==================================================================================================================\n");
 
         // Get top 10 countries (can be changed to read from user input if needed)
-        /**List<Country> userCountries = app.getCountriesByUserInput();
-        display.displayCountries(userCountries);*/
+        //List<Country> userCountries = app.getCountriesByUserInput();
+        //display.displayCountries(userCountries);
 
         System.out.println("\n==================================================================================================================\n");
 
-        /**List<Country> userContinentCountries = app.getContinentCountriesByUserInput();
-        display.displayCountries(userContinentCountries);*/
+        //List<Country> userContinentCountries = app.getContinentCountriesByUserInput();
+        //display.displayCountries(userContinentCountries);
 
 
         System.out.println("===========================<Population of specified continent>=========================");
