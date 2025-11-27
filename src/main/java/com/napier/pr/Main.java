@@ -59,6 +59,9 @@ public class Main {
         List<City> cityCity = app.getCitysByCityAndpopulation("Edinburgh");
         display.displayCityCity(cityCity);
 
+        List<City> cityReport = app.cityReport("Edinburgh");
+        app.displayCityReport(cityReport);
+
 
         // Disconnect from database
         app.disconnect();
@@ -150,6 +153,7 @@ public class Main {
         }
     }
 
+
     /**
      * gets list of countries by inputted continent
      *
@@ -157,8 +161,8 @@ public class Main {
      * @return the list of countries
      */
 
-
-
+    //usecase #15
+    // continent by population [90% COMPLEATED | currently can't figure out a way to display witch continient in final diplay method as no string can be used? - finn]
     public List<Country> getCountriesByContinentAndPopulation(String continent) {
         try {
 
@@ -348,6 +352,63 @@ public class Main {
 
         }
     }
+
+
+    public void displayCityCity(List<City> cityCity) {
+        //for every city in the citys list, print the details
+        int total_pop = 0;
+        if (cityCity != null)
+            for (City city : cityCity) {
+                System.out.println("Name: " + city.name + ", Population: " + city.population);
+                total_pop += city.population;
+            }
+        // Issue is here in final message
+        System.out.println("===========================<Population of specified City>=========================");
+        System.out.println("The total population is: " + total_pop);
+    }
+
+
+    // city report | use case #18 and #15 on gtt? appretnly they have 2 numbers lmao
+    public List<City> cityReport(String UserCity) {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT ID, Name, CountryCode, District, Population FROM city WHERE Name = '" + UserCity + "' ORDER BY Population DESC";
+            ResultSet rs = stmt.executeQuery(strSelect);
+
+            List<City> cityReport = new ArrayList<>();
+
+            while (rs.next()) {
+                City city = new City();
+                city.id = rs.getInt("id");
+                city.name = rs.getString("Name");
+                city.countryCode = rs.getInt("CountryCode");
+                city.district = rs.getString("District");
+                city.population = rs.getInt("Population");
+                cityReport.add(city);
+            }
+            return cityReport;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get details");
+            return null;
+
+        }
+    }
+
+
+    public void displayCityReport(List<City> cityReport) {
+        if (cityReport != null)
+            for (City city : cityReport) {
+                System.out.println("Name: " + city.name + ", Districkt: " + city.district + ", Population: " + city.population);
+
+            }
+
+    }
+
+
+
+
 
 
 
