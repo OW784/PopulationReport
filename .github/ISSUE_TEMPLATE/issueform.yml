@@ -2,9 +2,9 @@ name: Bug Report
 description: File a bug report.
 title: "[Bug]: "
 labels: ["bug", "triage"]
-projects: ["octo-org/1", "octo-org/44"]
+projects: ["Population Report"]
 assignees:
-  - octocat
+  - OW784
 body:
   - type: markdown
     attributes:
