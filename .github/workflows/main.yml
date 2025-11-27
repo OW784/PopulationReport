@@ -1,5 +1,6 @@
 name: A workflow for group Population Report App
 on: push
+permissions: write-all
 
 jobs:
   UnitTests:
