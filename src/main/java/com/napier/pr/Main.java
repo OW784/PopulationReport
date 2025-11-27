@@ -63,6 +63,8 @@ public class Main {
         app.displayCityReport(cityReport);
 
 
+
+
         // Disconnect from database
         app.disconnect();
     }
@@ -102,8 +104,7 @@ public class Main {
 
 
     /**
-     * Method to disconnect to the database
-     *
+     * Method to disconnect from the database
      */
     public void disconnect() {
         if (con != null) {
@@ -115,6 +116,7 @@ public class Main {
             }
         }
     }
+
 
     /**
      *
@@ -181,14 +183,81 @@ public class Main {
                 country.capital = rs.getString("Capital");
                 continentCountries.add(country);
             }
+
             return continentCountries;
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            System.out.println("Failed to get details");
+            System.out.println("Failed to get top N capital cities");
             return null;
+        }
+    }
+
+    /**
+     * Shows the total, urban and rural population of a continent, region or country.
+     */
+    public int populationReport(String areaType, String areaName) {
+        try {
+            Statement stmt = con.createStatement();
+
+            String totalPopQuery = "";
+            String urbanPopQuery = "";
+
+            if (areaType.equalsIgnoreCase("continent")) {
+                totalPopQuery =
+                        "SELECT SUM(Population) AS TotalPop FROM country WHERE Continent = '" + areaName + "'";
+
+                urbanPopQuery =
+                        "SELECT SUM(city.Population) AS UrbanPop FROM city " +
+                        "JOIN country ON city.CountryCode = country.Code " +
+                        "WHERE country.Continent = '" + areaName + "'";
+
+            } else if (areaType.equalsIgnoreCase("region")) {
+                totalPopQuery =
+                        "SELECT SUM(Population) AS TotalPop FROM country WHERE Region = '" + areaName + "'";
+
+                urbanPopQuery =
+                        "SELECT SUM(city.Population) AS UrbanPop FROM city " +
+                        "JOIN country ON city.CountryCode = country.Code " +
+                        "WHERE country.Region = '" + areaName + "'";
+
+            } else if (areaType.equalsIgnoreCase("country")) {
+                totalPopQuery =
+                        "SELECT Population AS TotalPop FROM country WHERE Name = '" + areaName + "'";
+
+                urbanPopQuery =
+                        "SELECT SUM(city.Population) AS UrbanPop FROM city " +
+                        "JOIN country ON city.CountryCode = country.Code " +
+                        "WHERE country.Name = '" + areaName + "'";
+            }
+
+            ResultSet rsTotal = stmt.executeQuery(totalPopQuery);
+            int totalPop = 0;
+            if (rsTotal.next()) {
+                totalPop = rsTotal.getInt("TotalPop");
+            }
+
+            ResultSet rsUrban = stmt.executeQuery(urbanPopQuery);
+            int urbanPop = 0;
+            if (rsUrban.next()) {
+                urbanPop = rsUrban.getInt("UrbanPop");
+            }
+
+            int ruralPop = totalPop - urbanPop;
+
+            System.out.println("Area Type: " + areaType);
+            System.out.println("Area Name: " + areaName);
+            System.out.println("Total Population: " + totalPop);
+            System.out.println("Urban Population: " + urbanPop);
+            System.out.println("Rural Population: " + ruralPop);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get details");
+            return 0;
 
         }
+        return 0;
     }
 
     /**
@@ -404,6 +473,60 @@ public class Main {
 
             }
 
+    }
+
+    public void topNCapitalCities(int limit, String areaType, String areaName) {
+        try {
+            Statement stmt = con.createStatement();
+
+            String strSelect =
+                    "SELECT city.Name AS CapitalName, country.Name AS CountryName, city.Population AS Population " +
+                            "FROM city JOIN country ON country.Capital = city.ID ";
+
+            if (areaType.equalsIgnoreCase("continent")) {
+                strSelect += "WHERE country.Continent = '" + areaName + "' ";
+            } else if (areaType.equalsIgnoreCase("region")) {
+                strSelect += "WHERE country.Region = '" + areaName + "' ";
+            }
+
+            strSelect += "ORDER BY city.Population DESC LIMIT " + limit;
+
+            ResultSet rs = stmt.executeQuery(strSelect);
+
+            while (rs.next()) {
+                String capital = rs.getString("CapitalName");
+                String country = rs.getString("CountryName");
+                int population = rs.getInt("Population");
+
+                System.out.println("Capital: " + capital + ", Country: " + country + ", Population: " + population);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get top N capital cities");
+        }
+    }
+
+    public void capitalCityReport() {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect =
+                    "SELECT city.Name AS CapitalName, country.Name AS CountryName, city.Population AS Population " +
+                            "FROM city JOIN country ON country.Capital = city.ID " +
+                            "ORDER BY city.Population DESC";
+
+            ResultSet rs = stmt.executeQuery(strSelect);
+
+            while (rs.next()) {
+                String name = rs.getString("CapitalName");
+                String country = rs.getString("CountryName");
+                int population = rs.getInt("Population");
+
+                System.out.println("Capital: " + name + ", Country: " + country + ", Population: " + population);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to produce capital city report");
+        }
     }
 
 
